@@ -1,0 +1,5 @@
+[05/20/20 10:33:00] FTP Filetransfer started
+[05/20/20 10:33:03] /tmp/adobegc.log transferred
+[05/20/20 10:33:03] FTP Filetransfer ended
+[05/20/20 10:33:29] FTP Filetransfer started
+[05/20/20 10:33:33] FTP Filetransfer ended
