@@ -32,9 +32,9 @@ function CreateDirectoriesFromPath ($DirectoryPath, $ServerPath, $Login, $Passwo
 }
 
 $logfilename = "ftplog.txt"
-$ftpURL = "ftp://ftp.recykler.dk/powershelltest"
-$ftpUsername = "recykler.dk"
-$ftpPwd = "ps1Test2020"
+$ftpURL = ""
+$ftpUsername = ""
+$ftpPwd = ""
 
 
 Write-Output "$(Get-TimeStamp) FTP Filetransfer started" | Out-file $logfilename -append
