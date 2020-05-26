@@ -38,38 +38,40 @@ $ftpPwd = ""
 
 
 Write-Output "$(Get-TimeStamp) FTP Filetransfer started" | Out-file $logfilename -append
-$files = Get-ChildItem "/tmp" -File -Recurse -Filter *.log
+$files=Get-ChildItem "H:/temp"-File -Recurse -Filter *.log
 [string[]]$arrayFromFile = Get-Content -Path $logfilename
-foreach ($f in $files){
-    #Write-Output "$(Get-TimeStamp) FTP Filetransfer started" | Out-file $logfilename -append
-    $outfile = $f.FullName
+foreach($f in $files){
+    $outfile=$f.FullName
     $filename = $f.Name
-    $filename 
-    $outfile
+    $filename
+    $outfile
     $ftpURL+$outfile
     #read the log to see if the file as allready been transferred
     if( (@($arrayFromFile) -like "*$outfile*").Count -eq 0 ){
         #create the directory
-        $FtpPath = New-Object System.Uri($ftpURL+$outfile);
+        $outFileCleaned = $outfile.substring(2)
+        #$outFileCleaned
+        $FtpPath = New-Object System.Uri($ftpURL+$outFileCleaned);
         $ServerPath = "ftp://" + $FtpPath.Host;
         $DirectoryPath = $FtpPath.LocalPath;
+        $DirectoryPath
         CreateDirectoriesFromPath $DirectoryPath $ServerPath $ftpUsername $ftpPwd;
-        # create the FtpWebRequest and configure it
-        $ftp = [System.Net.FtpWebRequest]::Create($ftpURL+$outfile)
-        $ftp = [System.Net.FtpWebRequest]$ftp
-        $ftp.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-        $ftp.Credentials = new-object System.Net.NetworkCredential($ftpUsername,$ftpPwd)
-        $ftp.UseBinary = $true
-        $ftp.UsePassive = $true
-        # read in the file to upload as a byte array
-        $content = [System.IO.File]::ReadAllBytes($outfile)
-        $ftp.ContentLength = $content.Length
-        # get the request stream, and write the bytes into it
-        $rs = $ftp.GetRequestStream()
-        $rs.Write($content, 0, $content.Length)
+        #create the Ftp Web Request and configure it
+        $ftp=[System.Net.FtpWebRequest]::Create($ftpURL+$outFileCleaned)
+        $ftp=[System.Net.FtpWebRequest]$ftp
+        $ftp.Method=[System.Net.WebRequestMethods+Ftp]::UploadFile
+        $ftp.Credentials=new-object System.Net.NetworkCredential($ftpUsername,$ftpPwd)
+        $ftp.UseBinary=$true
+        $ftp.UsePassive=$true
+        #read in the file to upload as a bytearray
+        $content=[System.IO.File]::ReadAllBytes($outfile)
+        $ftp.ContentLength=$content.Length
+        #get the request stream, and write the bytes into it
+        $rs=$ftp.GetRequestStream()
+        $rs.Write($content,0,$content.Length)
         #write to log that file is transfered
         Write-Output "$(Get-TimeStamp) $outfile transferred" | Out-file $logfilename -append
-        # be sure to clean up after ourselves
+        #be sure to clean up after our selves
         $rs.Close()
         $rs.Dispose()
     }
