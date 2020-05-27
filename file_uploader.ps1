@@ -64,11 +64,13 @@ foreach($f in $files){
         $ftp.UseBinary=$true
         $ftp.UsePassive=$true
         #read in the file to upload as a bytearray
-        $content=[System.IO.File]::ReadAllBytes($outfile)
+        #$content=[System.IO.File]::ReadAllBytes($outfile)
+        $content=[System.IO.File]::OpenRead($outfile)
         $ftp.ContentLength=$content.Length
         #get the request stream, and write the bytes into it
         $rs=$ftp.GetRequestStream()
-        $rs.Write($content,0,$content.Length)
+        #$rs.Write($content,0,$content.Length)
+        $content.CopyTo($rs, 256mb)
         #write to log that file is transfered
         Write-Output "$(Get-TimeStamp) $outfile transferred" | Out-file $logfilename -append
         #be sure to clean up after our selves
